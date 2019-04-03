@@ -1,0 +1,29 @@
+server:
+  port: 8200
+
+spring:
+  application:
+    name: dingxin-zipkin-service
+  sleuth:
+    enabled: false
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    password: root
+    url: jdbc:mysql://127.0.0.1:3306/dx_micro_base
+    username: root
+    schema:
+    - classpath:/zipkin.sql
+    initialize: true
+    max-idle: 10
+    max-wait: 10000
+    min-idle: 5
+  rabbitmq:
+    host: ${logmqhost:192.168.0.41}
+    port: 5672
+    username: 'guest'
+    password: 'guest'
+
+
+zipkin:
+  storage:
+    type: mysql

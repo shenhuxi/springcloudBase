@@ -1,0 +1,102 @@
+server:
+  port: 8260
+  context-path: /system
+  max-http-header-size: 1048576
+
+spring:
+  zipkin:
+    base-url: http://localhost:8200
+  sleuth:
+    sampler:
+      percentage: 1.0
+  output:
+    ansi:
+      enabled: always
+  jpa:
+    generate-ddl: true
+    hibernate:
+      naming:
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+    properties:
+      hibernate:
+#                dialect: org.hibernate.dialect.DmDialect
+        hbm2ddl:
+          auto: update
+    show-sql: false
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    password: root
+    url: jdbc:mysql://127.0.0.1:3306/dx_micro_base
+    username: root
+    max-idle: 10
+    max-wait: 10000
+    min-idle: 5
+  redis:
+    database: 1
+    host: 127.0.0.1
+    password: ''
+    pool:
+      max-active: 8
+      max-idle: 8
+      max-wait: -1
+      min-idle: 0
+    port: 6379
+    timeout: 0
+  rabbitmq:
+    host: ${logmqhost:47.106.152.21}
+    port: 5672
+    username: 'guest'
+    password: 'guest'
+
+
+logging:
+  level:
+    root: info
+    org.springframework.security: trace
+    org.hibernate: INFO
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.hibernate.type.descriptor.sql.BasicExtractor: TRACE
+
+security:
+  sessions: stateless
+  oauth2:
+    resource:
+      loadBalanced: true #设置这个才可以使用eureka的服务名，配合loadBalancerInterceptor bean。
+      user-info-uri: http://dingxin-api-gateway/api/uaa/user
+      prefer-token-info: false
+      service-id: dingxin-system-service
+
+dingxin:
+  core:
+    login:
+      auth-code-uri: http://localhost:8240/api/common/getAuthCode?flash=false
+      form-login-uri: http://localhost:8240/api/uaa/login
+      authorization: Basic cmVzb3VyY2Utc2VydmVyOnJvb3Q=
+      grant-type: password
+      username: lisi  # 用于单元测试
+      password: 666666 # 用于单元测试
+    system:
+      permissionGen: false #是否开启权限数据自动生成
+      permissionGenUri: http://localhost:8240/api/system/permission/gen
+      contextPath: ${server.context-path}
+
+#打开feign-hystrix 原理：高版本的springcloud-openfeign请求分为两层，先ribbon控制，后hystrix控制，hystrix默认处于关闭状态
+###feign 默认关闭熔断，请看HystrixFeignConfiguration
+feign:
+  hystrix:
+    enabled: true
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 52000
+        timeout:
+          enabled: false
+ribbon:
+  ReadTimeout: 48000
+  ConnectTimeout: 50000
+  MaxAutoRetries: 0
+  MaxAutoRetriesNextServer: 1

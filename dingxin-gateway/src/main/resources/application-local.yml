@@ -1,0 +1,99 @@
+server:
+  port: 8240
+  context-path: /api
+
+spring:
+  output:
+    ansi:
+      enabled: always
+  redis:
+      database: 1
+      host: 127.0.0.1
+      password: ''
+      pool:
+          max-active: 8
+          max-idle: 8
+          max-wait: -1
+          min-idle: 0
+      port: 6379
+      timeout: 0
+
+
+###feign 默认关闭熔断，请看HystrixFeignConfiguration
+feign:
+  hystrix:
+    enabled: true
+
+hystrix:
+    command:
+        default:
+            execution:
+                isolation:
+                    thread:
+                        timeoutInMilliseconds: 55000
+                timeout:
+                    enabled: false
+ribbon:
+    ReadTimeout: 50000
+    ConnectTimeout: 52000
+    MaxAutoRetries: 0
+    MaxAutoRetriesNextServer: 1
+
+swagger:
+  enable: true
+
+zuul:
+  SendErrorFilter:
+    post:
+      disable: true
+  ignored-services: '*'
+  routes:
+    oauth2-service:
+      path: /uaa/**
+      serviceId: dingxin-oauth2-service
+      sensitiveHeaders:
+      strip-prefix: false
+
+    system-server:
+      path: /system/**
+      serviceId: dingxin-system-service
+      sensitiveHeaders:
+      strip-prefix: false
+
+    file-server:
+      path: /file/**
+      serviceId: dingxin-file-service
+      sensitiveHeaders:
+      strip-prefix: false
+
+    log-server:
+      path: /log/**
+      serviceId: dingxin-log-service
+      sensitiveHeaders:
+      strip-prefix: false
+      
+    mq-server:
+      path: /mq/**
+      serviceId: dingxin-mq-service
+      sensitiveHeaders:
+      strip-prefix: false
+
+
+security:
+  basic:
+    enabled: false
+  oauth2:
+    resource:
+      user-info-uri:  http://localhost:8280/uaa/user
+      prefer-token-info: false
+      filter-order: 3
+
+#开启验证码过滤器
+dingxin:
+  gateway:
+    code:
+      validate: true  #开启验证码过滤器
+      validate-urls: /uaa/login
+    urls:  #免除security认证的URL，以英文逗号隔开配置多个
+      no-auth: /*/v2/api-docs,/uaa/oauth/token,/uaa/login/**,/common/**,/uaa/user**
+      needLog-urls: /uaa/login

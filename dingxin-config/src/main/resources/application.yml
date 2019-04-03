@@ -1,0 +1,34 @@
+server:
+  port: ${port:8230}
+
+spring: 
+  application:  
+    name: dingxin-config-service
+  cloud:  
+    config:
+      server:
+        git: #配置git仓库地址
+          #giturl由外部启动时传入  program arguments传入：--giturl=http://120.78.83.172/152710086/dingxin-config.git
+          #也可VM arguments传入: -Dgiturl=http://120.78.83.172/152710086/dingxin-config.git
+          uri: ${giturl:http://120.78.83.172/152710086/dingxin-config.git}
+
+          
+#该文件的命名规则是：{application}-{profile}.properties
+#请求配置文件的规则如下：
+#/{application}/{profile}/[label]
+#/{application}-{profile}.yml
+#/{label}/{application}-{profile}.yml
+#/{application}-{profile}.properties
+#/{label}/{application}-{profile}.properties
+#其中{label}是指分支，默认是master。
+
+eureka: 
+  client:
+    registerWithEureka: true #是否将自己注册到Eureka服务中，默认为true
+    fetchRegistry: true #是否从Eureka中获取注册信息，默认为true
+    serviceUrl: #Eureka客户端与Eureka服务端进行交互的地址
+      defaultZone: http://dingxin:666666@localhost:8220/eureka
+  instance: 
+    prefer-ip-address: true #将自己的ip地址注册到Eureka服务中
+    ipAddress: ${ipAddress:127.0.0.1}
+

@@ -1,0 +1,85 @@
+ftp:
+   basePath: D:/file_dingxin/
+   enabled: true
+   host: 127.0.0.1
+   passWord: dingxin123456
+   port: 21
+   userName: dingxin
+
+file:
+   previewUrl: http://localhost:8240/api/uaa/
+   basePath: D:/file_dingxin/
+   imageTypes: BMP,GIF,JPG,PIC,PNG,TIF
+   imageNum: 5
+   fileTypes: TXT,DOC,DOCX,XLS,XLSX,HLP,WPS,RTF,HTML,PDF,RAR,ZIP,ARJ,GZ,WAV,AIF,AU,MP3,RAM,WMA,MMF,AMR,AAC,FLAC
+   fileNum: 5
+
+spring:
+    datasource:
+        driver-class-name: com.mysql.jdbc.Driver
+        password: root
+        url: jdbc:mysql://127.0.0.1:3306/dx_micro_base
+        username: root
+        max-idle: 10
+        max-wait: 10000
+        min-idle: 5  
+    redis:
+        database: 1
+        host: 127.0.0.1
+        password: ''
+        pool:
+            max-active: 8
+            max-idle: 8
+            max-wait: -1
+            min-idle: 0
+        port: 6379
+        timeout: 0
+    rabbitmq:
+        host: ${logmqhost:192.168.0.41}
+        port: 5672
+        username: 'guest'
+        password: 'guest'  
+
+server:
+  port: 8210
+  context-path: /file
+tomcat:
+    connector:
+        max-swallow-size: ${spring.http.multipart.max-request-size}
+spring:
+    http:
+        multipart:
+            max-file-size: 20MB
+            max-request-size: 88MB
+    output:
+        ansi:
+            enabled: always
+    jpa:
+        generate-ddl: true
+        hibernate:
+            naming:
+                physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+        properties:
+            hibernate:
+                hbm2ddl:
+                    auto: update
+        show-sql: true
+
+
+
+logging:
+  level:
+    root: info
+    org.springframework.security: trace
+    org.hibernate: INFO
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.hibernate.type.descriptor.sql.BasicExtractor: TRACE
+
+security:
+    oauth2:
+        resource:
+            loadBalanced: true
+            prefer-token-info: false
+            service-id: dingxin-file-service
+            user-info-uri: http://dingxin-api-gateway/api/uaa/user
+    sessions: stateless

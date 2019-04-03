@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+	<parent>
+        <artifactId>dingxin</artifactId>
+        <groupId>com.dingxin</groupId>
+        <version>1.0.0</version>
+    </parent>
+
+    <groupId>com.dingxin</groupId>
+    <artifactId>dingxin-modules</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+
+    <name>dingxin-modules</name>
+    <url>http://maven.apache.org</url>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+
+    <modules>
+        <module>dingxin-system-service</module>
+        <module>dingxin-file-service</module>
+        <module>dingxin-gen-service</module>
+        <module>dingxin-zipkin-service</module>
+		<module>dingxin-log-service</module>
+		<module>dingxin-feign-api</module>		
+        <module>dingxin-mq-service</module>
+  </modules>
+
+</project>

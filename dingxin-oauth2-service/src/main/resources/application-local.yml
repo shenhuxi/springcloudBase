@@ -1,0 +1,99 @@
+server:
+    port: 8280
+    context-path: /uaa
+
+spring:
+    zipkin:
+        base-url: http://localhost:8200
+    sleuth:
+        sampler:
+          percentage: 1.0
+    output:
+        ansi:
+            enabled: always
+    rabbitmq:
+        host: ${logmqhost:47.106.152.21}
+        port: 5672
+        username: 'guest'
+        password: 'guest'
+    redis:
+        database: 1
+        host: 127.0.0.1
+        password: ''
+        pool:
+            max-active: 8
+            max-idle: 8
+            max-wait: -1
+            min-idle: 0
+        port: 6379
+        timeout: 0
+        
+
+
+#Spring Cloud中，Feign和Ribbon在整合了Hystrix后，可能会出现首次调用失败的问题,Hystrix默认的超时时间是1秒，如果超过这个时间尚未响应，将会进入fallback代码。
+# 而首次请求往往会比较慢（因为Spring的懒加载机制，要实例化一些类），这个响应时间可能就大于1秒了。
+#hystrix 配置
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+        #如果enabled设置为false，则请求超时交给ribbon控制
+          enabled: true
+        isolation:
+          thread:
+            timeoutInMilliseconds: 30000
+#打开feign-hystrix 原理：高版本的springcloud-openfeign请求分为两层，先ribbon控制，后hystrix控制，hystrix默认处于关闭状态
+feign:
+  hystrix:
+    enabled: true
+#请求处理的超时时间
+ribbon:
+  ReadTimeout: 25000
+#请求连接的超时时间
+  ConnectTimeout: 28000
+
+security:
+    sessions: stateless
+    oauth2:
+      resource:
+        filter-order: 3
+
+dingxin:
+  core:
+      system:
+        permissionGen: false #是否开启权限数据自动生成
+        permissionGenUri: http://localhost:8240/api/system/permission/gen
+        contextPath: ${server.context-path}
+      login:
+        auth-code-uri: http://localhost:8240/api/common/getAuthCode?flash=false
+        form-login-uri: http://localhost:8240/api/uaa/login
+        authorization: Basic cmVzb3VyY2Utc2VydmVyOnJvb3Q=
+        grant-type: password
+        username: admin  # 用于单元测试
+        password: 666666 # 用于单元测试
+  security:
+    oauth2:
+      clients:
+        - clientId: resource-server
+          clientSecret: root
+          accessTokenValiditySeconds: 44000
+          grantTypes: password,authorization_code,refresh_token
+          scopes: read,write,trust
+        - clientId: browser
+          clientSecret: root
+          accessTokenValiditySeconds: 44000
+          grantTypes: cilent
+          scopes: ui
+    urls: #免除security认证的URL，以英文逗号隔开配置多个
+      no-auth: /oauth/token,/login/**,/user**,/**/v2/api-docs
+
+
+logging:
+  level:
+    root: info
+    org.springframework.security: trace
+    org.hibernate: INFO
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.hibernate.type.descriptor.sql.BasicExtractor: TRACE
+

@@ -1,0 +1,40 @@
+server:
+  port: 8300
+  context-path: /mq
+  max-http-header-size: 1048576
+
+spring:
+    output:
+        ansi:
+            enabled: always
+    rabbitmq:
+        host: ${logmqhost:192.168.0.41}
+        port: 5672
+        username: 'guest'
+        password: 'guest'
+
+
+logging:
+  level:
+    root: info
+    org.springframework.security: trace
+
+dingxin:
+  core:
+    login:
+      auth-code-uri: http://localhost:8240/api/common/getAuthCode?flash=false
+      form-login-uri: http://localhost:8240/api/uaa/login
+      authorization: Basic cmVzb3VyY2Utc2VydmVyOnJvb3Q=
+      grant-type: password
+      username: lisi  # 用于单元测试
+      password: 666666 # 用于单元测试
+
+#打开feign-hystrix 原理：高版本的springcloud-openfeign请求分为两层，先ribbon控制，后hystrix控制，hystrix默认处于关闭状态
+feign:
+  hystrix:
+    enabled: true
+#请求处理的超时时间
+ribbon:
+  ReadTimeout: 5000
+#请求连接的超时时间
+  ConnectTimeout: 5000
